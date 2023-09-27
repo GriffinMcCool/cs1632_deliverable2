@@ -1,13 +1,11 @@
 package edu.pitt.cs;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.junit.*;
-import org.mockito.*;
-import static org.mockito.Mockito.*;
-
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CoffeeMakerQuestTest {
 
@@ -16,15 +14,18 @@ public class CoffeeMakerQuestTest {
 	ArrayList<Room> rooms;
 
 	@Before
-	public void setup() {
+	public void setup() throws FileNotFoundException {
 		// 0. Turn on bug injection for Player and Room.
 		Config.setBuggyPlayer(true);
 		Config.setBuggyRoom(true);
 
 		// TODO: 1. Create a Player with no items (no coffee, no cream, no sugar)
 		// and assign to player.
+        player = new Player();
 
 		// TODO: 2. Create 6 rooms as specified in rooms.config and add to rooms list.
+        RoomsJSONParser rjp = new RoomsJSONParser();
+        rooms = rjp.loadFromFile("rooms.config");
 
 		// 3. Create Coffee Maker Quest game using player and rooms, and assign to cmq.
 		cmq = CoffeeMakerQuest.createInstance(player, rooms);
