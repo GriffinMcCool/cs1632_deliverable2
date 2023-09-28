@@ -1,11 +1,15 @@
 package edu.pitt.cs;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class CoffeeMakerQuestTest {
 
@@ -21,14 +25,65 @@ public class CoffeeMakerQuestTest {
 
 		// TODO: 1. Create a Player with no items (no coffee, no cream, no sugar)
 		// and assign to player.
-        player = new Player();
+        player = Mockito.mock(Player.class);
 
 		// TODO: 2. Create 6 rooms as specified in rooms.config and add to rooms list.
-        RoomsJSONParser rjp = new RoomsJSONParser();
-        rooms = rjp.loadFromFile("rooms.config");
+		//Room1
+        Room room1 = Mockito.mock(Room.class);
+		Mockito.when(room1.getFurnishing()).thenReturn("Quaint sofa");
+		Mockito.when(room1.getAdjective()).thenReturn("Small");
+		Mockito.when(room1.getItem()).thenReturn(Item.COFFEE);
+		Mockito.when(room1.getNorthDoor()).thenReturn("Magenta");
+		Mockito.when(room1.getSouthDoor()).thenReturn(null);
+		rooms.add(room1);
+
+		//Room2
+        Room room2 = Mockito.mock(Room.class);
+		Mockito.when(room2.getFurnishing()).thenReturn("Sad record player");
+		Mockito.when(room2.getAdjective()).thenReturn("Funny");
+		Mockito.when(room2.getItem()).thenReturn(Item.NONE);
+		Mockito.when(room2.getNorthDoor()).thenReturn("Beige");
+		Mockito.when(room2.getSouthDoor()).thenReturn("Massive");
+		rooms.add(room2);
+
+		//Room3
+        Room room3 = Mockito.mock(Room.class);
+		Mockito.when(room3.getFurnishing()).thenReturn("Tight Pizza");
+		Mockito.when(room3.getAdjective()).thenReturn("Refinanced");
+		Mockito.when(room3.getItem()).thenReturn(Item.COFFEE);
+		Mockito.when(room3.getNorthDoor()).thenReturn("Dead");
+		Mockito.when(room3.getSouthDoor()).thenReturn("Smart");
+		rooms.add(room3);
+
+		//Room4
+        Room room4 = Mockito.mock(Room.class);
+		Mockito.when(room4.getFurnishing()).thenReturn("Flat energy drink");
+		Mockito.when(room4.getAdjective()).thenReturn("Dumb");
+		Mockito.when(room4.getItem()).thenReturn(Item.NONE);
+		Mockito.when(room4.getNorthDoor()).thenReturn("Vivacious");
+		Mockito.when(room4.getSouthDoor()).thenReturn("Slim");
+		rooms.add(room4);
+
+		//Room5
+        Room room5 = Mockito.mock(Room.class);
+		Mockito.when(room5.getFurnishing()).thenReturn("Beautiful bag of money");
+		Mockito.when(room5.getAdjective()).thenReturn("Bloodthirsty");
+		Mockito.when(room5.getItem()).thenReturn(Item.NONE);
+		Mockito.when(room5.getNorthDoor()).thenReturn("Purple");
+		Mockito.when(room5.getSouthDoor()).thenReturn("Sandy");
+		rooms.add(room5);
+
+		//Room6
+        Room room6 = Mockito.mock(Room.class);
+		Mockito.when(room6.getFurnishing()).thenReturn("Perfect air hockey table");
+		Mockito.when(room6.getAdjective()).thenReturn("Rough");
+		Mockito.when(room6.getItem()).thenReturn(Item.SUGAR);
+		Mockito.when(room6.getNorthDoor()).thenReturn(null);
+		Mockito.when(room6.getSouthDoor()).thenReturn("Minimalist");
+		rooms.add(room6);
 
 		// 3. Create Coffee Maker Quest game using player and rooms, and assign to cmq.
-		cmq = CoffeeMakerQuest.createInstance(player, rooms);
+		cmq = new CoffeeMakerQuestImpl(player, rooms);
 	}
 
 	@After
@@ -47,6 +102,9 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testGetInstructionsString() {
 		// TODO
+        String res = cmq.getInstructionsString();
+        String message = "The method getInstructionsString() did not return the correct value";
+        assertEquals(message , " INSTRUCTIONS (N,S,L,I,D,H) > ", res);
 	}
 
 	/**
