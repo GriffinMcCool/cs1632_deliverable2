@@ -315,7 +315,7 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandDLose() {
 		// TODO
-		Mockito.when(player.getInventoryString()).thenReturn("YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n\n");
+		Mockito.when(player.getInventoryString()).thenReturn("YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n");
 		
 		String s = cmq.processCommand("D");
 		boolean b = cmq.isGameOver();
@@ -346,7 +346,7 @@ public class CoffeeMakerQuestTest {
 		Mockito.when(player.checkCoffee()).thenReturn(true);
 		Mockito.when(player.checkCream()).thenReturn(true);
 		Mockito.when(player.checkSugar()).thenReturn(true);
-		Mockito.when(player.getInventoryString()).thenReturn("You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n\n");
+		Mockito.when(player.getInventoryString()).thenReturn("You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n");
 
 		String s = cmq.processCommand("D");
 		boolean b = cmq.isGameOver();
@@ -477,7 +477,7 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandH() {
 		String message = "Command 'H' did not return the expected value";
-		String expected = "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n\n";
+		String expected = "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n";
 		assertEquals(message, expected, cmq.processCommand("H"));
 	}
 

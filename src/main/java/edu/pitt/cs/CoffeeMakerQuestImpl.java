@@ -204,18 +204,18 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 				// if you have all 3, you win
 				if (player.checkCoffee() && player.checkCream() && player.checkSugar()){
 					gameOver = true;
-					return player.getInventoryString() + "You drink the beverage and are ready to study!\nYou win!\n";
+					return player.getInventoryString() + "\nYou drink the beverage and are ready to study!\nYou win!\n";
 				}
 				// if you have 1, there is a special statement
 				if (player.checkCoffee() || player.checkCream() || player.checkSugar()){
 					gameOver = true;
-					return player.getInventoryString() + "You refuse to drink this half-made sludge. You cannot study.\nYou lose!\n";
+					return player.getInventoryString() + "\nYou refuse to drink this half-made sludge. You cannot study.\nYou lose!\n";
 				} else {
 					gameOver = true;
-					return player.getInventoryString() + "You drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
+					return player.getInventoryString() + "\nYou drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
 				}
 			case "h":
-				return "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n\n";
+				return "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n";
 			default:
 				return "What?\n";
 		}
