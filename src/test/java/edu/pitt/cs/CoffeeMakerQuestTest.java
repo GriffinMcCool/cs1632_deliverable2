@@ -35,7 +35,7 @@ public class CoffeeMakerQuestTest {
         Room room1 = Mockito.mock(Room.class);
 		Mockito.when(room1.getFurnishing()).thenReturn("Quaint sofa");
 		Mockito.when(room1.getAdjective()).thenReturn("Small");
-		Mockito.when(room1.getItem()).thenReturn(Item.COFFEE);
+		Mockito.when(room1.getItem()).thenReturn(Item.CREAM);
 		Mockito.when(room1.getNorthDoor()).thenReturn("Magenta");
 		Mockito.when(room1.getSouthDoor()).thenReturn(null);
 		rooms.add(room1);
@@ -218,6 +218,11 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandI() {
 		// TODO
+		Mockito.when(player.getInventoryString()).thenReturn("YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n");
+		String s = cmq.processCommand("I");
+		String msg = "Command 'I' did not return expected value.";
+		String exp = "YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n";
+		assertEquals(msg, exp, s);
 	}
 
 	/**
@@ -233,6 +238,11 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandLCream() {
 		// TODO
+		String s = cmq.processCommand("l");
+		String msg = "Command 'l' did not return expected value.";
+		String exp = "There might be something here...\nYou found some creamy cream!\n";
+		assertEquals(msg, exp, s);
+		Mockito.verify(player).addItem(Item.CREAM);
 	}
 
 	/**
@@ -250,6 +260,13 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandN() {
 		// TODO
+		cmq.setCurrentRoom(rooms.get(3));
+		String s = cmq.processCommand("n");
+		Room r = cmq.getCurrentRoom();
+		String msg1 = "Command 'n' did not return expected value";
+		String msg2 = "Current room is incorrect (expected 4)";
+		assertEquals(msg1, "", s);
+		assertEquals(msg2, rooms.get(4), r);
 	}
 
 	/**
@@ -266,6 +283,13 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandS() {
 		// TODO
+		String s = cmq.processCommand("s");
+		Room r = cmq.getCurrentRoom();
+		String msg1 = "Command 's' did not return expected value";
+		String msg2 = "Current room is incorrect (expected 0)";
+		String exp = "A door in that direction does not exist.\n";
+		assertEquals(msg1, exp, s);
+		assertEquals(msg2, rooms.get(0), r);
 	}
 
 	/**
@@ -282,6 +306,15 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandDLose() {
 		// TODO
+		Mockito.when(player.getInventoryString()).thenReturn("YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n\n");
+		String s = cmq.processCommand("D");
+		boolean b = cmq.isGameOver();
+		String msg1 = "Command 'D' did not return expected value";
+		String msg2 = "Game should be over, but it is not";
+		String exp = "YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n\nYou drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
+		assertEquals(msg1, exp, s);
+		assertTrue(msg2, b);
+
 	}
 
 	/**
@@ -299,6 +332,17 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandDWin() {
 		// TODO
+		Mockito.when(player.checkCoffee()).thenReturn(true);
+		Mockito.when(player.checkCream()).thenReturn(true);
+		Mockito.when(player.checkSugar()).thenReturn(true);
+		Mockito.when(player.getInventoryString()).thenReturn("You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n\n");
+		String s = cmq.processCommand("D");
+		boolean b = cmq.isGameOver();
+		String msg1 = "Command 'D' did not return expected value.";
+		String msg2 = "Game should be over, but it is not";
+		String exp = "You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n\nYou drink the beverage and are ready to study!\nYou win!\n";
+		assertEquals(msg1, exp, s);
+		assertTrue(msg2, b);
 	}
 
 	// TODO: Put in more unit tests of your own making to improve coverage!
