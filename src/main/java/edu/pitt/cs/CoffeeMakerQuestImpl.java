@@ -5,6 +5,9 @@ import java.util.*;
 public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 
 	// TODO: Add more member variables and methods as needed.
+	private Player player;
+	private ArrayList<Room> rooms;
+	private Room curRoom;
 
 	/**
 	 * Constructor. Rooms are laid out from south to north, such that the
@@ -16,6 +19,9 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	CoffeeMakerQuestImpl(Player player, ArrayList<Room> rooms) {
 		// TODO
+		this.player = player;
+		this.rooms = rooms;
+		curRoom = rooms.get(0);
 	}
 
 	/**
@@ -38,8 +44,44 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public boolean areDoorsPlacedCorrectly() {
 		// TODO
-		return false;
+
+		//Check for when there is only one door
+		if(rooms.size() == 1){
+			Room room = rooms.get(0);
+			if(room.getNorthDoor() == null && room.getSouthDoor() == null)
+				return true;
+			else
+				return false;
+		}
+		
+		//check nothernmost and southernmost room conditions
+		Room south = rooms.get(0);
+		Room north = rooms.get(rooms.size() - 1);
+
+		if(northAndSouthCorrect(north, south) == false)
+			return false;
+		
+		
+		//check middle room conditions
+		for(int i = 1; i < rooms.size() - 1; i++){
+			Room room = rooms.get(i);
+			if(room.getSouthDoor() == null || room.getNorthDoor() == null)
+				return false;
+		}
+
+		//return true if all checks pass without returning false
+		return true;
 	}
+
+	private boolean northAndSouthCorrect(Room northRoom, Room southRoom) {
+		if(northRoom.getSouthDoor() == null || northRoom.getNorthDoor() != null)
+			return false;
+		if(southRoom.getSouthDoor() != null || southRoom.getNorthDoor() == null)
+			return false;
+		
+		return true;
+	}
+
 
 	/**
 	 * Checks whether each room has a unique adjective and furnishing.
@@ -49,7 +91,17 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 
 	public boolean areRoomsUnique() {
 		// TODO
-		return false;
+		ArrayList<String> adjectives = new ArrayList<String>();
+
+		for(Room room : rooms) {
+			String adjective = room.getAdjective();
+			if(adjectives.contains(adjective))
+				return false;
+			else
+				adjectives.add(adjective);
+		}
+
+		return true;
 	}
 
 	/**
@@ -60,7 +112,7 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public Room getCurrentRoom() {
 		// TODO
-		return null;
+		return curRoom;
 	}
 
 	/**
@@ -71,8 +123,8 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 * @return true if successful, false otherwise
 	 */
 	public boolean setCurrentRoom(Room room) {
-		// TODO
-		return false;
+		curRoom = room;
+		return true;
 	}
 
 	/**
@@ -83,7 +135,7 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public String getInstructionsString() {
 		// TODO
-		return "";
+		return " INSTRUCTIONS (N,S,L,I,D,H) > ";
 	}
 
 	/**

@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -28,6 +30,7 @@ public class CoffeeMakerQuestTest {
         player = Mockito.mock(Player.class);
 
 		// TODO: 2. Create 6 rooms as specified in rooms.config and add to rooms list.
+		rooms = new ArrayList<Room>();
 		//Room1
         Room room1 = Mockito.mock(Room.class);
 		Mockito.when(room1.getFurnishing()).thenReturn("Quaint sofa");
@@ -119,6 +122,8 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testGetCurrentRoom() {
 		// TODO
+		String message = "getCurrentRoom() did not return the correct room";
+		assertEquals(message, rooms.get(0), cmq.getCurrentRoom());
 	}
 
 	/**
@@ -135,6 +140,13 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testSetCurrentRoom() {
 		// TODO
+		String message1 = "setCurrentRoom(rooms.get(2)) returned false";
+		String message2 = "getCurrentRoom() did not return the correct room";
+		Boolean setResult = cmq.setCurrentRoom(rooms.get(2));
+		Room getResult = cmq.getCurrentRoom();
+
+		assertTrue(message1, setResult);
+		assertEquals(message2, rooms.get(2), getResult);
 	}
 
 	/**
@@ -149,6 +161,8 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testAreDoorsPlacedCorrectly() {
 		// TODO
+		String message = "areDoorsPlacedCorrectly returned false";
+		assertTrue(message, cmq.areDoorsPlacedCorrectly());
 	}
 
 	/**
@@ -164,6 +178,11 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testAreDoorsPlacedCorrectlyMissingSouthDoor() {
 		// TODO
+		Room room3 = rooms.get(3);
+		Mockito.when(room3.getSouthDoor()).thenReturn(null);
+
+		String message = "areDoorsPlacedCorrectly returned true when it should have returned false";
+		assertFalse(message, cmq.areDoorsPlacedCorrectly());
 	}
 
 	/**
@@ -176,9 +195,14 @@ public class CoffeeMakerQuestTest {
 	 * Postconditions: Return value of cmq.areRoomsUnique() is false.
 	 * </pre>
 	 */
-	@Test
+	@Test //my last one
 	public void testAreRoomsUniqueDuplicateAdjective() {
 		// TODO
+		Room room2 = rooms.get(2);
+		Mockito.when(room2.getAdjective()).thenReturn("Small");
+
+		String message = "areRoomsUnique() returns true when the rooms are not unique";
+		assertFalse(message, cmq.areRoomsUnique());
 	}
 
 	/**
@@ -278,5 +302,25 @@ public class CoffeeMakerQuestTest {
 	}
 
 	// TODO: Put in more unit tests of your own making to improve coverage!
+
+	//this test tests if the private method that tests if the northernmost and southernmost rooms are correctly configured works when they are not configured correctly
+	@Test
+	public void testNorthAndSouthDoors() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method method = CoffeeMakerQuestImpl.class.getDeclaredMethod("northAndSouthCorrect", Room.class, Room.class);
+		method.setAccessible(true);
+
+		Room north = Mockito.mock(Room.class);
+		Mockito.when(north.getSouthDoor()).thenReturn("Slim");
+		Mockito.when(north.getNorthDoor()).thenReturn("Purple");
+
+		Room south = Mockito.mock(Room.class);
+		Mockito.when(south.getSouthDoor()).thenReturn("Orange");
+		Mockito.when(south.getNorthDoor()).thenReturn("Heavy");
+
+		Boolean res = (Boolean)method.invoke(cmq, north, south);
+		String message = "the private method northAndSouthCorrect returned true when it should return false";
+		assertFalse(message, res.booleanValue());
+		
+	}
 
 }
