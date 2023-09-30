@@ -5,11 +5,11 @@ import java.util.*;
 public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 
 	// TODO: Add more member variables and methods as needed.
-	Player p;
-	ArrayList<Room> r;
+	Player player;
+	ArrayList<Room> rooms;
 	Room currentRoom;
 	int currentRoomIndex;
-	boolean over;
+	boolean gameOver;
 	/**
 	 * Constructor. Rooms are laid out from south to north, such that the
 	 * first room in rooms becomes the southernmost room and the last room becomes
@@ -22,7 +22,8 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 		// TODO
 		this.player = player;
 		this.rooms = rooms;
-		curRoom = rooms.get(0);
+		currentRoom = rooms.get(0);
+		currentRoomIndex = 0;
 	}
 
 	/**
@@ -32,7 +33,7 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public boolean isGameOver() {
 		// TODO
-		return over;
+		return gameOver;
 	}
 
 	/**
@@ -113,7 +114,9 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public Room getCurrentRoom() {
 		// TODO
-		if (r == null) return null;
+		if (rooms == null) 
+			return null;
+
 		return currentRoom;
 	}
 
@@ -126,15 +129,12 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public boolean setCurrentRoom(Room room) {
 		// TODO
-		if (room == null) return false;
+		if (room == null || !rooms.contains(room)) 
+			return false;
+
 		currentRoom = room;
-		// find index of room
-		for (int i = 0; i < r.size(); i++){
-			if (r.get(i).equals(room)){
-				currentRoomIndex = i;
-				break;
-			}
-		}
+		currentRoomIndex = rooms.indexOf(room);
+
 		return true;
 	}
 
@@ -165,90 +165,59 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	 */
 	public String processCommand(String cmd) {
 		// TODO
+		cmd = cmd.toLowerCase();
 		switch(cmd){
 			case "n":
-				return nCommand();
-			case "N":
-				return nCommand();
+				if (currentRoom.getNorthDoor() == null) {
+					return "A door in that direction does not exist.\n";
+				}
+				else {
+					setCurrentRoom(rooms.get(currentRoomIndex+1));
+					return "";
+				}
 			case "s":
-				return sCommand();
-			case "S":
-				return sCommand();
+				if (currentRoom.getSouthDoor() == null){
+					return "A door in that direction does not exist.\n";
+				}
+				else {
+					setCurrentRoom(rooms.get(currentRoomIndex-1));
+					return "";
+				}
 			case "l":
-				return lCommand();
-			case "L":
-				return lCommand();
+				Item i = currentRoom.getItem();
+				if (i != null){
+					player.addItem(i);
+				}
+				switch (i) {
+					case COFFEE:
+						return "There might be something here...\nYou found some caffeinated coffee!\n";
+					case CREAM:
+						return "There might be something here...\nYou found some creamy cream!\n";
+					case SUGAR:
+						return "There might be something here...\nYou found some sweet sugar!\n";
+					default:
+						return "You don't see anything out of the ordinary.\n";
+				}
 			case "i":
-				return iCommand();
-			case "I":
-				return iCommand();
+				return player.getInventoryString();
 			case "d":
-				return dCommand();
-			case "D":
-				return dCommand();
+				// if you have all 3, you win
+				if (player.checkCoffee() && player.checkCream() && player.checkSugar()){
+					gameOver = true;
+					return player.getInventoryString() + "You drink the beverage and are ready to study!\nYou win!\n";
+				}
+				// if you have 1, there is a special statement
+				if (player.checkCoffee() || player.checkCream() || player.checkSugar()){
+					gameOver = true;
+					return player.getInventoryString() + "You refuse to drink this half-made sludge. You cannot study.\nYou lose!\n";
+				} else {
+					gameOver = true;
+					return player.getInventoryString() + "You drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
+				}
 			case "h":
-				return hCommand();
-			case "H":
-				return hCommand();
+				return "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n\n";
 			default:
 				return "What?\n";
 		}
-	}
-
-	private String nCommand(){
-		if (currentRoom.getNorthDoor() == null){
-			return "A door in that direction does not exist.\n";
-		}
-		setCurrentRoom(r.get(currentRoomIndex+1));
-		return "";
-	}
-
-	private String sCommand(){
-		if (currentRoom.getSouthDoor() == null){
-			return "A door in that direction does not exist.\n";
-		}
-		setCurrentRoom(r.get(currentRoomIndex-1));
-		return "";
-	}
-
-	private String lCommand(){
-		Item i = currentRoom.getItem();
-		if (i != null){
-			p.addItem(i);
-		}
-		switch (i) {
-			case COFFEE:
-				return "There might be something here...\nYou found some caffeinated coffee!\n";
-			case CREAM:
-				return "There might be something here...\nYou found some creamy cream!\n";
-			case SUGAR:
-				return "There might be something here...\nYou found some sweet sugar!\n";
-			default:
-				return "You don't see anything out of the ordinary.\n";
-		}
-	}
-
-	private String iCommand(){
-		return p.getInventoryString();
-	}
-
-	private String dCommand(){
-		// if you have all 3, you win
-		if (p.checkCoffee() && p.checkCream() && p.checkSugar()){
-			over = true;
-			return p.getInventoryString() + "You drink the beverage and are ready to study!\nYou win!\n";
-		}
-		// if you have 1, there is a special statement
-		if (p.checkCoffee() || p.checkCream() || p.checkSugar()){
-			over = true;
-			return p.getInventoryString() + "You refuse to drink this half-made sludge. You cannot study.\nYou lose!\n";
-		} else {
-			over = true;
-			return p.getInventoryString() + "You drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
-		}
-	}
-
-	private String hCommand(){
-		return "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n\n";
 	}
 }
