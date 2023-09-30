@@ -47,7 +47,7 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 	public boolean areDoorsPlacedCorrectly() {
 		// TODO
 
-		//Check for when there is only one door
+		//Check for when there is only one room
 		if(rooms.size() == 1){
 			Room room = rooms.get(0);
 			if(room.getNorthDoor() == null && room.getSouthDoor() == null)

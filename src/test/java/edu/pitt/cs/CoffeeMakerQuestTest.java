@@ -360,15 +360,164 @@ public class CoffeeMakerQuestTest {
 
 	// TODO: Put in more unit tests of your own making to improve coverage!
 
+
+	@Test
+	public void testValidSingleRoom() {
+		//setup room with no doors
+		Room room = Mockito.mock(Room.class);
+		Mockito.when(room.getNorthDoor()).thenReturn(null);
+		Mockito.when(room.getSouthDoor()).thenReturn(null);
+
+		//add room to an array list and make a new cmq object with that list as the rooms arraylist
+		ArrayList<Room> rooms2 = new ArrayList<Room>();
+		rooms2.add(room);
+		CoffeeMakerQuestImpl cmq2 = new CoffeeMakerQuestImpl(player, rooms2);
+
+		//test areDoorsPlacedCorrectly()
+		String message = "areDoorsPlacedCorrrectly does not return the correct value for a single room";
+		assertTrue(message, cmq2.areDoorsPlacedCorrectly());
+	}
+
+	@Test
+	public void testInvalidSingleRoom() {
+		//setup room with both doors
+		Room room = Mockito.mock(Room.class);
+		Mockito.when(room.getNorthDoor()).thenReturn("Tall");
+		Mockito.when(room.getSouthDoor()).thenReturn("Short");
+
+		//add room to an array list and make a new cmq object with that list as the rooms arraylist
+		ArrayList<Room> rooms2 = new ArrayList<Room>();
+		rooms2.add(room);
+		CoffeeMakerQuestImpl cmq2 = new CoffeeMakerQuestImpl(player, rooms2);
+
+		//test areDoorsPlacedCorrectly()
+		String message = "areDoorsPlacedCorrrectly does not return the correct value for a single room";
+		assertFalse(message, cmq2.areDoorsPlacedCorrectly());
+	}
+
+	//this test tests if areRoomsUnique() returns true when the rooms are unique
+	@Test
+	public void testUniqueRooms() {
+		String message = "areRoomsUnique returns false when all the rooms are unique";
+		assertTrue(message, cmq.areRoomsUnique());
+	}
+
+	//this test tests if setCurrentRoom() returns false when passed a null room
+	@Test
+	public void testNullRoomSetCurrentRoom() {
+		Room room = null;
+
+		String message = "setCurrentRoom() returns true on a null room";
+		assertFalse(message, cmq.setCurrentRoom(room));
+	}
+
+	//this test tests the "N" command when a door does not exist to the north
+	@Test
+	public void testNWhenNoDoorNorth() {
+		Room room = rooms.get(rooms.size() - 1);
+		cmq.setCurrentRoom(room);
+
+		String message = "processCommand() did not output the error message when the command N is entered with no existing north door";
+		String expected = "A door in that direction does not exist.\n";
+		assertEquals(message, expected, cmq.processCommand("N"));
+	}
+
+	//this test tests the "S" command when there is a valid door to the south
+	@Test
+	public void testValidSouthDoor() {
+		Room room = rooms.get(1);
+		cmq.setCurrentRoom(room);
+
+		String message1 = "processCommand() did not output the error message when the command S is entered with an existing north door";
+		String message2 = "the current room was not changed when the S command was used";
+		assertEquals(message1, "", cmq.processCommand("S"));
+		assertEquals(message2, rooms.get(0), cmq.getCurrentRoom());
+	}
+
+	//this test tests the "L" command when the room has coffee
+	@Test
+	public void testProcessCommandLCoffee() {
+		
+		String msg = "Command 'l' did not return expected value.";
+		String exp = "There might be something here...\nYou found some caffeinated coffee!\n";
+		
+		cmq.setCurrentRoom(rooms.get(2));
+		String s = cmq.processCommand("l");
+		assertEquals(msg, exp, s);
+		Mockito.verify(player).addItem(Item.COFFEE);
+	}
+
+	//this test tests the "L" command when the room has sugar
+	@Test
+	public void testProcessCommandLSugar() {
+		
+		String msg = "Command 'l' did not return expected value.";
+		String exp = "There might be something here...\nYou found some sweet sugar!\n";
+		
+		cmq.setCurrentRoom(rooms.get(5));
+		String s = cmq.processCommand("l");
+		assertEquals(msg, exp, s);
+		Mockito.verify(player).addItem(Item.SUGAR);
+	}
+
+	//this test tests the "L" command when the room has nothing
+	@Test
+	public void testProcessCommandLEmpty() {
+		
+		String msg = "Command 'l' did not return expected value.";
+		String exp = "You don't see anything out of the ordinary.\n";
+		
+		cmq.setCurrentRoom(rooms.get(1));
+		String s = cmq.processCommand("l");
+		assertEquals(msg, exp, s);
+	}
+
+	//this test tests the "H" command
+	@Test
+	public void testProcessCommandH() {
+		String message = "Command 'H' did not return the expected value";
+		String expected = "N - Go north\nS - Go south\nL - Look and collect any items in the room\nI - Show inventory of items collected\nD - Drink coffee made from items in inventory\n\n";
+		assertEquals(message, expected, cmq.processCommand("H"));
+	}
+
+	//this test tests process command with an invalid input
+	@Test
+	public void testProcessCommandInvalid() {
+		String message = "Entering an invalid command did not return the expected value";
+		String expected = "What?\n";
+
+		assertEquals(message, expected, cmq.processCommand("12345"));
+	}
+
+	
+
 	//this test tests if the private method that tests if the northernmost and southernmost rooms are correctly configured works when they are not configured correctly
 	@Test
-	public void testNorthAndSouthDoors() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void testInvalidNorthDoor() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Method method = CoffeeMakerQuestImpl.class.getDeclaredMethod("northAndSouthCorrect", Room.class, Room.class);
 		method.setAccessible(true);
 
 		Room north = Mockito.mock(Room.class);
 		Mockito.when(north.getSouthDoor()).thenReturn("Slim");
 		Mockito.when(north.getNorthDoor()).thenReturn("Purple");
+
+		Room south = Mockito.mock(Room.class);
+		Mockito.when(south.getNorthDoor()).thenReturn("Heavy");
+
+		Boolean res = (Boolean)method.invoke(cmq, north, south);
+		String message = "the private method northAndSouthCorrect returned true when it should return false";
+		assertFalse(message, res.booleanValue());
+		
+	}
+
+	//this test tests if the private method that tests if the northernmost and southernmost rooms are correctly configured works when they are configured correctly
+	@Test
+	public void testInvalidSouthDoor() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method method = CoffeeMakerQuestImpl.class.getDeclaredMethod("northAndSouthCorrect", Room.class, Room.class);
+		method.setAccessible(true);
+
+		Room north = Mockito.mock(Room.class);
+		Mockito.when(north.getSouthDoor()).thenReturn("Purple");
 
 		Room south = Mockito.mock(Room.class);
 		Mockito.when(south.getSouthDoor()).thenReturn("Orange");
