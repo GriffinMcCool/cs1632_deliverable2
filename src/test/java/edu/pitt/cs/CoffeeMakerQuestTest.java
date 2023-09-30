@@ -24,6 +24,7 @@ public class CoffeeMakerQuestTest {
 		// 0. Turn on bug injection for Player and Room.
 		Config.setBuggyPlayer(true);
 		Config.setBuggyRoom(true);
+		Config.setBuggyCoffeeMakerQuest(true);
 
 		// TODO: 1. Create a Player with no items (no coffee, no cream, no sugar)
 		// and assign to player.
@@ -86,7 +87,7 @@ public class CoffeeMakerQuestTest {
 		rooms.add(room6);
 
 		// 3. Create Coffee Maker Quest game using player and rooms, and assign to cmq.
-		cmq = new CoffeeMakerQuestImpl(player, rooms);
+		cmq = CoffeeMakerQuest.createInstance(player, rooms);
 	}
 
 	@After
