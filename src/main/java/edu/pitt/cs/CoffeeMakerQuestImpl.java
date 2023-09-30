@@ -48,8 +48,9 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 		// TODO
 
 		//Check for when there is only one room
-		if(rooms.size() == 1){
+		if(rooms.size() == 1) {
 			Room room = rooms.get(0);
+
 			if(room.getNorthDoor() == null && room.getSouthDoor() == null)
 				return true;
 			else
@@ -65,8 +66,9 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 
 
 		//check middle room conditions
-		for(int i = 1; i < rooms.size() - 1; i++){
+		for(int i = 1; i < rooms.size() - 1; i++) {
 			Room room = rooms.get(i);
+
 			if(room.getSouthDoor() == null || room.getNorthDoor() == null)
 				return false;
 		}
@@ -97,6 +99,7 @@ public class CoffeeMakerQuestImpl implements CoffeeMakerQuest {
 
 		for(Room room : rooms) {
 			String adjective = room.getAdjective();
+			
 			if(adjectives.contains(adjective))
 				return false;
 			else

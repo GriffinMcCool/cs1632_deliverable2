@@ -24,7 +24,6 @@ public class CoffeeMakerQuestTest {
 		// 0. Turn on bug injection for Player and Room.
 		Config.setBuggyPlayer(true);
 		Config.setBuggyRoom(true);
-		//Config.setBuggyCoffeeMakerQuest(true);
 
 		// TODO: 1. Create a Player with no items (no coffee, no cream, no sugar)
 		// and assign to player.
@@ -106,9 +105,9 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testGetInstructionsString() {
 		// TODO
-        String res = cmq.getInstructionsString();
+        String result = cmq.getInstructionsString();
         String message = "The method getInstructionsString() did not return the correct value";
-        assertEquals(message , " INSTRUCTIONS (N,S,L,I,D,H) > ", res);
+        assertEquals(message , " INSTRUCTIONS (N,S,L,I,D,H) > ", result);
 	}
 
 	/**
@@ -196,7 +195,7 @@ public class CoffeeMakerQuestTest {
 	 * Postconditions: Return value of cmq.areRoomsUnique() is false.
 	 * </pre>
 	 */
-	@Test //my last one
+	@Test
 	public void testAreRoomsUniqueDuplicateAdjective() {
 		// TODO
 		Room room2 = rooms.get(2);
@@ -220,12 +219,12 @@ public class CoffeeMakerQuestTest {
 	public void testProcessCommandI() {
 		// TODO
 		Mockito.when(player.getInventoryString()).thenReturn("YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n");
-		String s = cmq.processCommand("I");
+		String actual = cmq.processCommand("I");
 		
-		String msg = "Command 'I' did not return expected value.";
-		String exp = "YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n";
+		String message = "Command 'I' did not return expected value.";
+		String expected = "YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n";
 		
-		assertEquals(msg, exp, s);
+		assertEquals(message, expected, actual);
 	}
 
 	/**
@@ -241,11 +240,11 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandLCream() {
 		// TODO
-		String s = cmq.processCommand("l");
-		String msg = "Command 'l' did not return expected value.";
-		String exp = "There might be something here...\nYou found some creamy cream!\n";
+		String actual = cmq.processCommand("l");
+		String message = "Command 'l' did not return expected value.";
+		String expected = "There might be something here...\nYou found some creamy cream!\n";
 		
-		assertEquals(msg, exp, s);
+		assertEquals(message, expected, actual);
 		Mockito.verify(player).addItem(Item.CREAM);
 	}
 
@@ -266,14 +265,14 @@ public class CoffeeMakerQuestTest {
 		// TODO
 		cmq.setCurrentRoom(rooms.get(3));
 		
-		String s = cmq.processCommand("n");
-		Room r = cmq.getCurrentRoom();
+		String actual = cmq.processCommand("n");
+		Room room = cmq.getCurrentRoom();
 		
-		String msg1 = "Command 'n' did not return expected value";
-		String msg2 = "Current room is incorrect (expected 4)";
+		String message1 = "Command 'n' did not return expected value";
+		String message2 = "Current room is incorrect (expected 4)";
 		
-		assertEquals(msg1, "", s);
-		assertEquals(msg2, rooms.get(4), r);
+		assertEquals(message1, "", actual);
+		assertEquals(message2, rooms.get(4), room);
 	}
 
 	/**
@@ -290,15 +289,15 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandS() {
 		// TODO
-		String s = cmq.processCommand("s");
-		Room r = cmq.getCurrentRoom();
+		String actual = cmq.processCommand("s");
+		Room room = cmq.getCurrentRoom();
 		
-		String msg1 = "Command 's' did not return expected value";
-		String msg2 = "Current room is incorrect (expected 0)";
-		String exp = "A door in that direction does not exist.\n";
+		String message1 = "Command 's' did not return expected value";
+		String message2 = "Current room is incorrect (expected 0)";
+		String expected = "A door in that direction does not exist.\n";
 		
-		assertEquals(msg1, exp, s);
-		assertEquals(msg2, rooms.get(0), r);
+		assertEquals(message1, expected, actual);
+		assertEquals(message2, rooms.get(0), room);
 	}
 
 	/**
@@ -317,15 +316,15 @@ public class CoffeeMakerQuestTest {
 		// TODO
 		Mockito.when(player.getInventoryString()).thenReturn("YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n");
 		
-		String s = cmq.processCommand("D");
-		boolean b = cmq.isGameOver();
+		String commandResult = cmq.processCommand("D");
+		boolean gameResult = cmq.isGameOver();
 		
-		String msg1 = "Command 'D' did not return expected value";
-		String msg2 = "Game should be over, but it is not";
-		String exp = "YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n\nYou drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
+		String message1 = "Command 'D' did not return expected value";
+		String message2 = "Game should be over, but it is not";
+		String expected = "YOU HAVE NO COFFEE!\nYOU HAVE NO CREAM!\nYOU HAVE NO SUGAR!\n\nYou drink thin air and can only dream of coffee. You cannot study.\nYou lose!\n";
 		
-		assertEquals(msg1, exp, s);
-		assertTrue(msg2, b);
+		assertEquals(message1, expected, commandResult);
+		assertTrue(message2, gameResult);
 	}
 
 	/**
@@ -348,20 +347,20 @@ public class CoffeeMakerQuestTest {
 		Mockito.when(player.checkSugar()).thenReturn(true);
 		Mockito.when(player.getInventoryString()).thenReturn("You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n");
 
-		String s = cmq.processCommand("D");
-		boolean b = cmq.isGameOver();
+		String commandResult = cmq.processCommand("D");
+		boolean gameResult = cmq.isGameOver();
 
-		String msg1 = "Command 'D' did not return expected value.";
-		String msg2 = "Game should be over, but it is not";
-		String exp = "You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n\nYou drink the beverage and are ready to study!\nYou win!\n";
+		String message1 = "Command 'D' did not return expected value.";
+		String message2 = "Game should be over, but it is not";
+		String expected = "You have a cup of delicious coffee.\nYou have some fresh cream.\nYou have some tasty sugar.\n\nYou drink the beverage and are ready to study!\nYou win!\n";
 		
-		assertEquals(msg1, exp, s);
-		assertTrue(msg2, b);
+		assertEquals(message1, expected, commandResult);
+		assertTrue(message2, gameResult);
 	}
 
 	// TODO: Put in more unit tests of your own making to improve coverage!
 
-
+	//tests tests areDoorsPlacedCorrectly() when there is only a single room in the game and the room is configured correctly
 	@Test
 	public void testValidSingleRoom() {
 		//setup room with no doors
@@ -370,15 +369,16 @@ public class CoffeeMakerQuestTest {
 		Mockito.when(room.getSouthDoor()).thenReturn(null);
 
 		//add room to an array list and make a new cmq object with that list as the rooms arraylist
-		ArrayList<Room> rooms2 = new ArrayList<Room>();
-		rooms2.add(room);
-		CoffeeMakerQuestImpl cmq2 = new CoffeeMakerQuestImpl(player, rooms2);
+		ArrayList<Room> roomsList = new ArrayList<Room>();
+		roomsList.add(room);
+		CoffeeMakerQuestImpl cmq2 = new CoffeeMakerQuestImpl(player, roomsList);
 
 		//test areDoorsPlacedCorrectly()
 		String message = "areDoorsPlacedCorrrectly does not return the correct value for a single room";
 		assertTrue(message, cmq2.areDoorsPlacedCorrectly());
 	}
 
+	//tests areDoorsPlacedCorrectly() when there is only a single room in the game and the room is configured incorrectly
 	@Test
 	public void testInvalidSingleRoom() {
 		//setup room with both doors
@@ -387,34 +387,33 @@ public class CoffeeMakerQuestTest {
 		Mockito.when(room.getSouthDoor()).thenReturn("Short");
 
 		//add room to an array list and make a new cmq object with that list as the rooms arraylist
-		ArrayList<Room> rooms2 = new ArrayList<Room>();
-		rooms2.add(room);
-		CoffeeMakerQuestImpl cmq2 = new CoffeeMakerQuestImpl(player, rooms2);
+		ArrayList<Room> roomsList = new ArrayList<Room>();
+		roomsList.add(room);
+		CoffeeMakerQuestImpl cmq2 = new CoffeeMakerQuestImpl(player, roomsList);
 
 		//test areDoorsPlacedCorrectly()
 		String message = "areDoorsPlacedCorrrectly does not return the correct value for a single room";
 		assertFalse(message, cmq2.areDoorsPlacedCorrectly());
 	}
 
-	//this test tests if areRoomsUnique() returns true when the rooms are unique
+	//tests areRoomsUnique() when all the rooms are unique
 	@Test
 	public void testUniqueRooms() {
 		String message = "areRoomsUnique returns false when all the rooms are unique";
 		assertTrue(message, cmq.areRoomsUnique());
 	}
 
-	//this test tests if setCurrentRoom() returns false when passed a null room
+	//tests setCurrentRoom() when passed a null room
 	@Test
 	public void testNullRoomSetCurrentRoom() {
 		Room room = null;
-
 		String message = "setCurrentRoom() returns true on a null room";
 		assertFalse(message, cmq.setCurrentRoom(room));
 	}
 
-	//this test tests the "N" command when a door does not exist to the north
+	//tests the "N" command when a door does not exist to the north
 	@Test
-	public void testNWhenNoDoorNorth() {
+	public void testProcessCommandNNoDoorNorth() {
 		Room room = rooms.get(rooms.size() - 1);
 		cmq.setCurrentRoom(room);
 
@@ -425,7 +424,7 @@ public class CoffeeMakerQuestTest {
 
 	//this test tests the "S" command when there is a valid door to the south
 	@Test
-	public void testValidSouthDoor() {
+	public void testProcessCommandSValidDoorSouth() {
 		Room room = rooms.get(1);
 		cmq.setCurrentRoom(room);
 
@@ -439,12 +438,12 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandLCoffee() {
 		
-		String msg = "Command 'l' did not return expected value.";
-		String exp = "There might be something here...\nYou found some caffeinated coffee!\n";
+		String message = "Command 'l' did not return expected value.";
+		String expected = "There might be something here...\nYou found some caffeinated coffee!\n";
 		
 		cmq.setCurrentRoom(rooms.get(2));
-		String s = cmq.processCommand("l");
-		assertEquals(msg, exp, s);
+		String actual = cmq.processCommand("l");
+		assertEquals(message, expected, actual);
 		Mockito.verify(player).addItem(Item.COFFEE);
 	}
 
@@ -452,12 +451,12 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandLSugar() {
 		
-		String msg = "Command 'l' did not return expected value.";
-		String exp = "There might be something here...\nYou found some sweet sugar!\n";
+		String message = "Command 'l' did not return expected value.";
+		String expected = "There might be something here...\nYou found some sweet sugar!\n";
 		
 		cmq.setCurrentRoom(rooms.get(5));
-		String s = cmq.processCommand("l");
-		assertEquals(msg, exp, s);
+		String actual = cmq.processCommand("l");
+		assertEquals(message, expected, actual);
 		Mockito.verify(player).addItem(Item.SUGAR);
 	}
 
@@ -465,12 +464,12 @@ public class CoffeeMakerQuestTest {
 	@Test
 	public void testProcessCommandLEmpty() {
 		
-		String msg = "Command 'l' did not return expected value.";
-		String exp = "You don't see anything out of the ordinary.\n";
+		String message = "Command 'l' did not return expected value.";
+		String expected = "You don't see anything out of the ordinary.\n";
 		
 		cmq.setCurrentRoom(rooms.get(1));
-		String s = cmq.processCommand("l");
-		assertEquals(msg, exp, s);
+		String actual = cmq.processCommand("l");
+		assertEquals(message, expected, actual);
 	}
 
 	//this test tests the "H" command
@@ -492,7 +491,7 @@ public class CoffeeMakerQuestTest {
 
 	
 
-	//this test tests if the private method that tests if the northernmost and southernmost rooms are correctly configured works when they are not configured correctly
+	//tests the private method northAndSouthCorrect when the north room is configured incorrectly
 	@Test
 	public void testInvalidNorthDoor() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Method method = CoffeeMakerQuestImpl.class.getDeclaredMethod("northAndSouthCorrect", Room.class, Room.class);
@@ -511,7 +510,7 @@ public class CoffeeMakerQuestTest {
 		
 	}
 
-	//this test tests if the private method that tests if the northernmost and southernmost rooms are correctly configured works when they are configured correctly
+	//tests the private method northAndSouthCorrect when the south room is configured incorrectly
 	@Test
 	public void testInvalidSouthDoor() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Method method = CoffeeMakerQuestImpl.class.getDeclaredMethod("northAndSouthCorrect", Room.class, Room.class);
